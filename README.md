@@ -1,7 +1,7 @@
 # Physics-Visualizer
 
 Here you can find visual representations of different concepts in physics written in VPython.
-The files show the code for concept but the links below are visual representations of these physics principles.
+The files show the code for each concept but the links below are visual representations of these physics principles.
 
 Electric Motor: 
 https://trinket.io/glowscript/b47f7bdaf9

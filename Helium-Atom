@@ -1,0 +1,124 @@
+#Link to visualizer: https://trinket.io/glowscript/98540d4e65
+
+GlowScript 2.7 VPython
+
+#Window
+scene.width = 850
+scene.height = 600
+scene.center=vec(0,0,0)
+scene.zoom=-2
+scene.background = color.white
+scene.forward= vec(-1,-0.5,-1)
+
+#Battery
+bat=box(pos=vector(-.25,0,0), length=10, height=2, width=6, color=vec(.5, .5, .5))
+
+#Green Cable
+gcab1=cylinder(pos=vector(4.5,0,1.25), radius=.35, length=5, color=color.green) #x cable
+gcab2=cylinder(pos=vector(9.5,-.35,1.25), axis=vector(0,1,0), radius=.35, length=8.5, color=color.green) #y cable
+
+#Orange Cable
+ocab1=cylinder(pos=vector(4.5,0,-1.25), radius=.35, length=5, color=color.orange) #x cable
+ocab2=cylinder(pos=vector(9.5,-.35,-1.25), axis=vector(0,1,0), radius=.35, length=8.5, color=color.orange) #y cable
+
+#commutator
+extrusion(path=paths.arc(radius=1, up=vec(1,0,0), angle1=0, angle2=-pi, (pos=vec(10,9,0))), color=color.cyan, 
+shape=[ [shapes.rectangle(pos=[.5,-.5,5.25], width=2,height=0.5)] ]) #cyan half
+  
+extrusion(path=paths.arc(radius=1, up=vec(1,0,0), angle1=0, angle2=pi, (pos=vec(9,9,0))), color=color.magenta, 
+shape=[ [shapes.rectangle(pos=[.5,-.5,5.25], width=2,height=0.5)] ]) #magenta half
+  
+#wire coils
+lycab1=cylinder(pos=vector(-9.5,9,.925), radius=.35, length=20, color=color.yellow) #-x blue
+lycab2=cylinder(pos=vector(-9.5,9,.6), axis=vec(0,0,1), radius=.35, length=5, color=color.yellow) #z yellow
+lycab3=cylinder(pos=vector(-17.25,9,5.5), radius=.35, length=8, color=color.yellow) #-x blue 2
+rycab1=cylinder(pos=vector(-9.5,9,-.925), radius=.35, length=20, color=color.yellow) #-x yellow
+rycab2=cylinder(pos=vector(-9.5,9,-5.6), axis=vec(0,0,1), radius=.35, length=5, color=color.yellow) #-z yellow
+rycab3=cylinder(pos=vector(-17.25,9,-5.5), radius=.35, length=8, color=vec(color.yellow)) #-x blue 2
+mycab=cylinder(pos=vector(-17,9,-5.5), axis=vec(0,0,1), radius=.35, length=11, color=color.yellow) #z yellow
+
+#magnets
+extrusion(path=paths.arc(radius=1, up=vec(1,0,0), angle1=0, angle2=-pi, (pos=vec(10,9,2.5))), color=color.blue, 
+  shape=[ [shapes.rectangle(pos=[23.5,-7,5.25], width=10,height=1.5)] ]) #blue mag
+  
+extrusion(path=paths.arc(radius=1, up=vec(1,0,0), angle1=0, angle2=pi, (pos=vec(9,9,-2.5))), color=color.red, 
+  shape=[ [shapes.rectangle(pos=[-22.5,-7,5.25], width=10,height=1.5)] ]) #red mag
+  
+#current direction vectors
+current1=arrow( pos=vector(0,9,.9)
+              , axis=vector(1,0,0)
+              , length=7.5
+              , shaftwidth=0
+              , shaftlength=5
+              , color=color.green
+              )
+current2=arrow( pos=vector(0,9,-.9)
+              , axis=vector(-1,0,0)
+              , length=7.5
+              , shaftwidth=0
+              , shaftlength=5
+              , color=color.orange
+              )
+
+#magnetic field vectors
+mfv=arrow(pos=vector(-10,9,-7), axis=vector(0,0,5), shaftwidth=.5, shaftlength=5, color=vec(.7,.7,.7), length=15)
+mfv2=arrow(pos=vector(-17,9,-7), axis=vector(0,0,5), shaftwidth=.5, shaftlength=5, color=vec(.7,.7,.7), length =15)
+mfv3=arrow(pos=vector(-10,13.5,-7), axis=vector(0,0,5), shaftwidth=.5, shaftlength=5, color=vec(.7,.7,.7), length=15)
+mfv4=arrow(pos=vector(-17,13.5,-7), axis=vector(0,0,5), shaftwidth=.5, shaftlength=5, color=vec(.7,.7,.7), length =15)
+mfv5=arrow(pos=vector(-10,4.5,-7), axis=vector(0,0,5), shaftwidth=.5, shaftlength=5, color=vec(.7,.7,.7), length=15)
+mfv6=arrow(pos=vector(-17,4.5,-7), axis=vector(0,0,5), shaftwidth=.5, shaftlength=5, color=vec(.7,.7,.7), length =15)
+#Compound Coil
+coil = compound([lycab1, lycab2, lycab3, rycab1, rycab2, rycab3, mycab])
+
+##Rotation
+#theta=angularvel*t
+#w=a*dt
+#a=T/I
+#A=area i=current B=magnetic field
+#T=torque/momentofinertia=dipole moment*magnetic field=iABsin(theta)
+# w=iABsin(theta/I)
+
+theta=0
+dt=1e-3
+angle_increment = pi/16
+
+count = 0
+while True:
+	if theta > 2*pi:
+	  theta = 0
+	rate(50)
+	theta=theta+angle_increment
+	print("theta: ", theta)
+	coil.rotate(angle=angle_increment, axis=vec(1,0,0))
+	## 0 to 90 degrees
+	if 0 < theta < pi/2.:
+		current1.axis        = vector(1,0,0)
+		current1.color       = color.orange
+		current2.axis        = vector(-1,0,0)
+		current2.color       = color.green
+	## 90 to 180 degrees
+	if pi/2. < theta < pi:
+		current1.axis        = vector(-1,0,0)
+		current1.color       = color.green
+		current2.axis        = vector(1,0,0)
+		current2.color       = color.orange
+	## 180 to 270 degrees
+	if pi < theta < 3*pi/2:
+		current1.axis        = vector(-1,0,0)
+		current1.color       = color.green
+		current2.axis        = vector(1,0,0)
+		current2.color       = color.orange
+	## 270 to 360 degrees
+	if 3*pi/2 < theta < 2*pi:
+		current1.axis        = vector(1,0,0)
+		current1.color       = color.orange
+		current2.axis        = vector(-1,0,0)
+		current2.color       = color.green
+	current1.rotate(angle=angle_increment, axis=vec(1,0,0), origin=vector(0,9,0))
+	current2.rotate(angle=angle_increment, axis=vec(1,0,0), origin=vector(0,9,0))
+	current1.length=7.5
+	current1.shaftwidth=0
+	current1.shaftlength=5
+	current2.length=7.5
+	current2.shaftwidth=0
+	current2.shaftlength=5

@@ -8,6 +8,3 @@ https://trinket.io/glowscript/b47f7bdaf9
 
 Helium Atom: 
 https://trinket.io/glowscript/98540d4e65
-
-Line of Charge: 
-https://trinket.io/glowscript/e4ca1437ec
